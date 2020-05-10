@@ -2,8 +2,8 @@ import java.util.*;
 
 public class DFS
 {
-  List<List<Node>> adjMatrix;
-  List<Boolean> visited;
+  private List<List<Node>> adjMatrix;
+  private List<Boolean> visited;
 
   public DFS(List<List<Node>> adjMatrix)
   {
@@ -19,12 +19,10 @@ public class DFS
       return false;
 
     visited.set(startNode.index, true);
-
     if(startNode.value == searchValue)
     {
       return true;
     }
-
     List<Node> neighbours = adjMatrix.get(startNode.index);
     Iterator<Node> iter = neighbours.iterator();
     while(iter.hasNext())
@@ -33,8 +31,42 @@ public class DFS
        if(result == true)
         return result;
     }
-
     return false;
   }
+
+  public int[] findConnectedComponents()
+  {
+    int count = -1;
+    int[] connectedComponents = new int[adjMatrix.size()];
+    for(int i = 0; i < adjMatrix.size(); i++)
+    {
+      if(visited.get(i) == false)
+      {
+        count++;
+        connectedComponentsDfs(connectedComponents, i, count);
+      }
+    }
+    return connectedComponents;
+  }
+
+  private void connectedComponentsDfs(int[] connectedComponents, int startNodeIndex, int count)
+  {
+    visited.set(startNodeIndex, true);
+
+    connectedComponents[startNodeIndex] = count;
+    List<Node> neighbours = adjMatrix.get(startNodeIndex);
+    Iterator<Node> iter = neighbours.iterator();
+    
+    while(iter.hasNext())
+    {
+      Node nextNeighbour = iter.next();
+      if(visited.get(nextNeighbour.index) == false)
+      {
+        connectedComponentsDfs(connectedComponents, nextNeighbour.index, count);
+      }
+    }
+  }
+
+
 
 }
